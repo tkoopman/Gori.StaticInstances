@@ -20,6 +20,8 @@
     <Authors>Tim Koopman</Authors>
     <PackageLicenseExpression>MIT-0</PackageLicenseExpression>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <RepositoryUrl>https://github.com/tkoopman/Gori.StaticInstances</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,6 +42,10 @@
     <None Include="$(PkgGori_CodeStringBuilder)\lib\netstandard2.0\Gori.CodeStringBuilder.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <!-- Bundle Microsoft.Bcl.Memory (transitive dependency of Gori.CodeStringBuilder) -->
     <None Include="$(PkgMicrosoft_Bcl_Memory)\lib\netstandard2.0\Microsoft.Bcl.Memory.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
