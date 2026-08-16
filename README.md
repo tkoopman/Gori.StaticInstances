@@ -18,7 +18,7 @@ Add the NuGet package to your project:
 Place on a constructor to generate a static instance using that constructor and the supplied arguments. 
 Multiple attributes can be applied to the same constructor. 
 If constructor has parameters then you must add matching arguments to the `[StaticInstance]` attribute, 
-before [named attribute options](#options).
+before [named attribute options](#attribute-options).
 
 ```csharp
 [Singleton]
@@ -63,14 +63,14 @@ Options for both StaticInstance and Singleton attributes are mostly the same. To
 | -------------- | ------------- | ----------------------------- | ------------ | ---------------------------------------------------------------------------- |
 | StaticInstance | `Name`        | `string`                      | None         | Mandatory. Name of the generated static instance                             |
 | Singleton      | `Name`        | `string`                      | `"Instance"` | Optional. Name of the generated static instance                              |
-| *              | `Type`        | [`InstanceType`](#type)       | `Property`   | Type of static instance to create                                            |
+| *              | `Type`        | [`InstanceType`](#user-content-option-instancetype-type--instancetypeproperty-type)       | `Property`   | Type of static instance to create                                            |
 | *              | `Internal`    | `bool`                        | `false`      | Generates with access modifier of `internal` instead of the default `public` |
-| Singleton      | `Constructor` | [`Constructor`](#constructor) | `Auto`       | Options for creating private default constructor if missing                  |
+| Singleton      | `Constructor` | [`Constructor`](#option-constructor-constructor--constructorauto-constructor) | `Auto`       | Options for creating private default constructor if missing                  |
 
 
 > All names across `[Singleton]` and `[StaticInstance]` attributes on the same class must be unique.
 
-### Option: InstanceType (`Type = InstanceType.Property`) {#type}
+### Option: InstanceType (`Type = InstanceType.Property`)
 
 Controls what type of static instance is created. If class has multiple static instances, each can be of different types.
 
@@ -82,7 +82,7 @@ Controls what type of static instance is created. If class has multiple static i
 | Weak         | Creates a static read-only property backed by `WeakReference{T}` field. This will create thread-safe version |
 | WeakLockless | Creates a static read-only property backed by `WeakReference{T}` field                                       |
 
-### Option: Constructor (`Constructor = Constructor.Auto`) {#constructor}
+### Option: Constructor (`Constructor = Constructor.Auto`)
 
 Controls when `[Singleton]` should create a private default constructor for the class.
 
