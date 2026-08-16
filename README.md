@@ -55,7 +55,7 @@ public partial class MyService { }
 
 ---
 
-## Attribute Options {#options}
+## Attribute Options
 
 Options for both StaticInstance and Singleton attributes are mostly the same. To avoid confusion with passing constructor parameters to `[StaticInstance]`, all attribute options are named.
 
@@ -63,14 +63,14 @@ Options for both StaticInstance and Singleton attributes are mostly the same. To
 | -------------- | ------------- | ----------------------------- | ------------ | ---------------------------------------------------------------------------- |
 | StaticInstance | `Name`        | `string`                      | None         | Mandatory. Name of the generated static instance                             |
 | Singleton      | `Name`        | `string`                      | `"Instance"` | Optional. Name of the generated static instance                              |
-| *              | `Type`        | [`InstanceType`](#user-content-option-instancetype-type--instancetypeproperty-type)       | `Property`   | Type of static instance to create                                            |
+| *              | `Type`        | [`InstanceType`](#option-instancetype)       | `Property`   | Type of static instance to create                                            |
 | *              | `Internal`    | `bool`                        | `false`      | Generates with access modifier of `internal` instead of the default `public` |
-| Singleton      | `Constructor` | [`Constructor`](#option-constructor-constructor--constructorauto-constructor) | `Auto`       | Options for creating private default constructor if missing                  |
+| Singleton      | `Constructor` | [`Constructor`](#option-constructor) | `Auto`       | Options for creating private default constructor if missing                  |
 
 
 > All names across `[Singleton]` and `[StaticInstance]` attributes on the same class must be unique.
 
-### Option: InstanceType (`Type = InstanceType.Property`)
+### Option: InstanceType
 
 Controls what type of static instance is created. If class has multiple static instances, each can be of different types.
 
@@ -82,7 +82,7 @@ Controls what type of static instance is created. If class has multiple static i
 | Weak         | Creates a static read-only property backed by `WeakReference{T}` field. This will create thread-safe version |
 | WeakLockless | Creates a static read-only property backed by `WeakReference{T}` field                                       |
 
-### Option: Constructor (`Constructor = Constructor.Auto`)
+### Option: Constructor
 
 Controls when `[Singleton]` should create a private default constructor for the class.
 
