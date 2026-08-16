@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Gori.StaticInstances.Testing/Gori.StaticInstances.Testing.csproj" />
+  <Project Path="Gori.StaticInstances/Gori.StaticInstances.csproj" />
+</Solution>

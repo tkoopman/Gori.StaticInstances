@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <!-- Generates a package at build -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- Do not include the generator as a lib dependency -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <Title>Gori.StaticInstances</Title>
+    <Description>Source generator for making singletons and other static instances including using Lazy or Weak References</Description>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Authors>Tim Koopman</Authors>
+    <PackageLicenseExpression>MIT-0</PackageLicenseExpression>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="NETStandard.Library" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.6.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Package the generator in the analyzer directory of the nuget package -->
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <!-- Bundle Gori.CodeStringBuilder so it is available as part of the analyzer -->
+    <None Include="$(PkgGori_CodeStringBuilder)\lib\netstandard2.0\Gori.CodeStringBuilder.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <!-- Bundle Microsoft.Bcl.Memory (transitive dependency of Gori.CodeStringBuilder) -->
+    <None Include="$(PkgMicrosoft_Bcl_Memory)\lib\netstandard2.0\Microsoft.Bcl.Memory.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Gori.CodeStringBuilder" Version="1.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.11" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
