@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Gori.StaticInstances.Attributes/Gori.StaticInstances.Attributes.csproj" Id="292525c3-6828-4c03-8c32-6a2956bb5833" />
   <Project Path="Gori.StaticInstances.Testing/Gori.StaticInstances.Testing.csproj" />
   <Project Path="Gori.StaticInstances/Gori.StaticInstances.csproj" />
 </Solution>

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Gori.StaticInstances\CompilerShims.cs" />
+    <Compile Include="..\Gori.StaticInstances\Const.cs" />
+    <Compile Include="..\Gori.StaticInstances\Constructor.cs" />
+    <Compile Include="..\Gori.StaticInstances\InstanceType.cs" />
+    <Compile Include="..\Gori.StaticInstances\IStaticInstanceOptions.cs" />
+    <Compile Include="..\Gori.StaticInstances\SingletonAttribute.cs" />
+    <Compile Include="..\Gori.StaticInstances\StaticInstanceAttribute.cs" />
+  </ItemGroup>
+  
+</Project>
