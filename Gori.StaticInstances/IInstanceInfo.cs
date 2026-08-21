@@ -1,6 +1,6 @@
 namespace Gori.StaticInstances;
 
-public partial class SingletonGenerator
+public partial class StaticInstancesGenerator
 {
     /// <summary>
     /// Data representing a Singleton or StaticInstance parameters.

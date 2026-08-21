@@ -14,8 +14,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
         #nullable enable
         partial class MyService
         {
-            public static MyService Instance { get; } = new();
-            public static MyService MyInstance { get; } = new();
+            public static MyService Instance { get; } = new MyService();
+            public static MyService MyInstance { get; } = new MyService();
         }
         """;
 
@@ -109,8 +109,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 #nullable enable
                 partial class MyService<T>
                 {
-                    public static MyService<T> Instance { get; } = new();
-                    public static MyService<T> MyInstance { get; } = new();
+                    public static MyService<T> Instance { get; } = new MyService<T>();
+                    public static MyService<T> MyInstance { get; } = new MyService<T>();
                 }
                 """,
         })
@@ -137,8 +137,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 {
                     partial class MyService
                     {
-                        public static MyService Instance { get; } = new();
-                        public static MyService MyInstance { get; } = new();
+                        public static MyService Instance { get; } = new MyService();
+                        public static MyService MyInstance { get; } = new MyService();
                     }
                 }
                 """,
@@ -166,8 +166,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 {
                     partial class Inner
                     {
-                        public static Inner Instance { get; } = new();
-                        public static Inner MyInstance { get; } = new();
+                        public static Inner Instance { get; } = new Inner();
+                        public static Inner MyInstance { get; } = new Inner();
                     }
                 }
                 """,
@@ -200,8 +200,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                     {
                         partial class Child
                         {
-                            public static Child Instance { get; } = new();
-                            public static Child MyInstance { get; } = new();
+                            public static Child Instance { get; } = new Child();
+                            public static Child MyInstance { get; } = new Child();
                         }
                     }
                 }
@@ -230,8 +230,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 {
                     partial class Inner
                     {
-                        public static Inner Instance { get; } = new();
-                        public static Inner MyInstance { get; } = new();
+                        public static Inner Instance { get; } = new Inner();
+                        public static Inner MyInstance { get; } = new Inner();
                     }
                 }
                 """,
@@ -259,8 +259,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 {
                     partial class Inner<T>
                     {
-                        public static Inner<T> Instance { get; } = new();
-                        public static Inner<T> MyInstance { get; } = new();
+                        public static Inner<T> Instance { get; } = new Inner<T>();
+                        public static Inner<T> MyInstance { get; } = new Inner<T>();
                     }
                 }
                 """,
@@ -288,8 +288,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 {
                     partial class Inner<TValue>
                     {
-                        public static Inner<TValue> Instance { get; } = new();
-                        public static Inner<TValue> MyInstance { get; } = new();
+                        public static Inner<TValue> Instance { get; } = new Inner<TValue>();
+                        public static Inner<TValue> MyInstance { get; } = new Inner<TValue>();
                     }
                 }
                 """,
@@ -335,12 +335,12 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 partial class MyService
                 {
                 #if NET9_0_OR_GREATER
-                    private static readonly Lock _weakLock = new();
+                    private static readonly Lock _weakLock = new Lock();
                 #else
-                    private static readonly object _weakLock = new();
+                    private static readonly object _weakLock = new object();
                 #endif
                 
-                    private static readonly WeakReference<MyService> _instance = new(null!);
+                    private static readonly WeakReference<MyService> _instance = new WeakReference<MyService>(null!);
 
                     public static MyService Instance
                     {
@@ -358,14 +358,14 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                                     return currentInstance;
                                 }
 
-                                currentInstance = new();
+                                currentInstance = new MyService();
                                 _instance.SetTarget(currentInstance);
                                 return currentInstance;
                             }
                         }
                     }
 
-                    private static readonly WeakReference<MyService> _myInstance = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance = new WeakReference<MyService>(null!);
                 
                     public static MyService MyInstance
                     {
@@ -383,7 +383,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                                     return currentInstance;
                                 }
                 
-                                currentInstance = new();
+                                currentInstance = new MyService();
                                 _myInstance.SetTarget(currentInstance);
                                 return currentInstance;
                             }
@@ -411,7 +411,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
 
                 partial class MyService
                 {
-                    private static readonly WeakReference<MyService> _instance = new(null!);
+                    private static readonly WeakReference<MyService> _instance = new WeakReference<MyService>(null!);
 
                     public static MyService Instance
                     {
@@ -422,13 +422,13 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                                 return currentInstance;
                             }
 
-                            currentInstance = new();
+                            currentInstance = new MyService();
                             _instance.SetTarget(currentInstance);
                             return currentInstance;
                         }
                     }
                 
-                    private static readonly WeakReference<MyService> _myInstance = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance = new WeakReference<MyService>(null!);
                 
                     public static MyService MyInstance
                     {
@@ -439,7 +439,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                                 return currentInstance;
                             }
                 
-                            currentInstance = new();
+                            currentInstance = new MyService();
                             _myInstance.SetTarget(currentInstance);
                             return currentInstance;
                         }
@@ -478,12 +478,12 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 partial class MyService
                 {
                 #if NET9_0_OR_GREATER
-                    private static readonly Lock _weakLock = new();
+                    private static readonly Lock _weakLock = new Lock();
                 #else
-                    private static readonly object _weakLock = new();
+                    private static readonly object _weakLock = new object();
                 #endif
                 
-                    private static readonly WeakReference<MyService> _instance = new(null!);
+                    private static readonly WeakReference<MyService> _instance = new WeakReference<MyService>(null!);
 
                     public static MyService Instance
                     {
@@ -494,15 +494,15 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                                 return currentInstance;
                             }
 
-                            currentInstance = new();
+                            currentInstance = new MyService();
                             _instance.SetTarget(currentInstance);
                             return currentInstance;
                         }
                     }
                         
-                    public static MyService MyInstance1 { get; } = new();
+                    public static MyService MyInstance1 { get; } = new MyService();
 
-                    private static readonly WeakReference<MyService> _myInstance2 = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance2 = new WeakReference<MyService>(null!);
                 
                     public static MyService MyInstance2
                     {
@@ -520,7 +520,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                                     return currentInstance;
                                 }
                 
-                                currentInstance = new(2);
+                                currentInstance = new MyService(2);
                                 _myInstance2.SetTarget(currentInstance);
                                 return currentInstance;
                             }
@@ -562,7 +562,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 {
                     private GrandParent () { }
 
-                    public static GrandParent Instance { get; } = new();
+                    public static GrandParent Instance { get; } = new GrandParent();
                 }
                 // <auto-generated/>
                 #nullable enable
@@ -573,9 +573,9 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                     {
                         partial class Child
                         {
-                            public static Child Instance { get; } = new();
+                            public static Child Instance { get; } = new Child();
 
-                            public static Child MyInstance { get; } = new();
+                            public static Child MyInstance { get; } = new Child();
                         }
                     }
                 }
@@ -586,7 +586,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 {
                     partial class Parent
                     {
-                        public static Parent MyInstance { get; } = new();
+                        public static Parent MyInstance { get; } = new Parent();
                     }
                 }
                 """,
@@ -620,21 +620,21 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 {
                     private MyService1 () { }
 
-                    public static MyService1 Instance { get; } = new();
+                    public static MyService1 Instance { get; } = new MyService1();
                 }
                 // <auto-generated/>
                 #nullable enable
 
                 partial class MyService2
                 {
-                    public static MyService2 Instance { get; } = new();
+                    public static MyService2 Instance { get; } = new MyService2();
                 }
                 // <auto-generated/>
                 #nullable enable
 
                 partial class MyService3
                 {
-                    public static MyService3 MyInstance { get; } = new();
+                    public static MyService3 MyInstance { get; } = new MyService3();
                 }
                 """,
         })
@@ -675,7 +675,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                 partial class GrandParent
                 {
                     private GrandParent () { }
-                    private static readonly Lazy<GrandParent> _instance = new(() => new());
+                    private static readonly Lazy<GrandParent> _instance = new Lazy<GrandParent>(() => new GrandParent());
                     public static GrandParent Instance => _instance.Value;
                 }
                 // <auto-generated/>
@@ -686,8 +686,8 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                     {
                         partial class Child
                         {
-                            public static Child Instance { get; } = new();
-                            private static readonly WeakReference<Child> _myInstance = new(null!);
+                            public static Child Instance { get; } = new Child();
+                            private static readonly WeakReference<Child> _myInstance = new WeakReference<Child>(null!);
                             public static Child MyInstance
                             {
                                 get
@@ -696,7 +696,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                                     {
                                         return currentInstance;
                                     }
-                                    currentInstance = new();
+                                    currentInstance = new Child();
                                     _myInstance.SetTarget(currentInstance);
                                     return currentInstance;
                                 }
@@ -711,11 +711,11 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                     partial class Parent
                     {
                 #if NET9_0_OR_GREATER
-                        private static readonly Lock _weakLock1 = new();
+                        private static readonly Lock _weakLock1 = new Lock();
                 #else
-                        private static readonly object _weakLock1 = new();
+                        private static readonly object _weakLock1 = new object();
                 #endif
-                        private static readonly WeakReference<Parent> _myInstance1 = new(null!);
+                        private static readonly WeakReference<Parent> _myInstance1 = new WeakReference<Parent>(null!);
                         public static Parent MyInstance
                         {
                             get
@@ -731,7 +731,7 @@ public class CombinedGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTestD
                                         return currentInstance;
                                     }
 
-                                    currentInstance = new();
+                                    currentInstance = new Parent();
                                     _myInstance1.SetTarget(currentInstance);
                                     return currentInstance;
                                 }

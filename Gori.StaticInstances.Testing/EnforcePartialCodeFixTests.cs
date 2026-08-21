@@ -15,7 +15,7 @@ public class EnforcePartialCodeFixTests
 {
     /// <summary>
     /// Builds an <see cref="AdhocWorkspace"/> containing a single C# document, runs
-    /// <see cref="SingletonAnalyzer"/> against it, applies the first
+    /// <see cref="StaticInstancesAnalyzer"/> against it, applies the first
     /// <see cref="EnforcePartialCodeFix"/> action for SGLE001, and returns the resulting
     /// source text.
     /// </summary>
@@ -47,7 +47,7 @@ public class EnforcePartialCodeFixTests
 
         // Run the analyzer on the compilation that belongs to this workspace project so
         // that diagnostic SourceTree references match the document's SyntaxTree.
-        CompilationWithAnalyzers withAnalyzers = compilation!.WithAnalyzers([new SingletonAnalyzer()]);
+        CompilationWithAnalyzers withAnalyzers = compilation!.WithAnalyzers([new StaticInstancesAnalyzer()]);
         ImmutableArray<Diagnostic> analyzerDiagnostics = await withAnalyzers.GetAnalyzerDiagnosticsAsync();
 
         Diagnostic? diagnostic = analyzerDiagnostics.FirstOrDefault(d => d.Id == "GSSI001");

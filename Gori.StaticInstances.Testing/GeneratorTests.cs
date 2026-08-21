@@ -50,8 +50,8 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("public static MyService Dev { get; } = new(\"localhost\", 5432);", generated);
-        Assert.Contains("public static MyService Instance { get; } = new();", generated);
+        Assert.Contains("public static MyService Dev { get; } = new MyService(\"localhost\", 5432);", generated);
+        Assert.Contains("public static MyService Instance { get; } = new MyService();", generated);
     }
 
     [Fact]
@@ -74,8 +74,8 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("public static MyService Dev { get; } = new(\"localhost\", 5432);", generated);
-        Assert.Contains("public static MyService Staging { get; } = new(\"staging-db\", 5432);", generated);
+        Assert.Contains("public static MyService Dev { get; } = new MyService(\"localhost\", 5432);", generated);
+        Assert.Contains("public static MyService Staging { get; } = new MyService(\"staging-db\", 5432);", generated);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("internal static MyService Dev { get; } = new(", generated);
+        Assert.Contains("internal static MyService Dev { get; } = new MyService(", generated);
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("public static MyService Alternate { get; } = new();", generated);
+        Assert.Contains("public static MyService Alternate { get; } = new MyService();", generated);
     }
 
     [Fact]
@@ -207,8 +207,8 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("public static MyService Dev { get; } = new(\"localhost\", 5432);", generated);
-        Assert.Contains("public static MyService Staging { get; } = new(\"staging-host\", 5432);", generated);
+        Assert.Contains("public static MyService Dev { get; } = new MyService(\"localhost\", 5432);", generated);
+        Assert.Contains("public static MyService Staging { get; } = new MyService(\"staging-host\", 5432);", generated);
         Assert.DoesNotContain("Instance", generated);
     }
 
@@ -231,8 +231,8 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("public static MyService Dev { get; } = new();", generated);
-        Assert.Contains("public static MyService Prod { get; } = new();", generated);
+        Assert.Contains("public static MyService Dev { get; } = new MyService();", generated);
+        Assert.Contains("public static MyService Prod { get; } = new MyService();", generated);
     }
 
     [Fact]
@@ -250,7 +250,7 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("public static MyService Default { get; } = new((int)default);", generated);
+        Assert.Contains("public static MyService Default { get; } = new MyService((int)default);", generated);
     }
 
     [Fact]
@@ -275,10 +275,10 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("public static MyService Default1a { get; } = new(1);", generated);
-        Assert.Contains("public static MyService Default1b { get; } = new(1);", generated);
-        Assert.Contains("public static MyService Default2 { get; } = new(1f);", generated);
-        Assert.Contains("public static MyService Default3 { get; } = new(\"1\");", generated);
+        Assert.Contains("public static MyService Default1a { get; } = new MyService(1);", generated);
+        Assert.Contains("public static MyService Default1b { get; } = new MyService(1);", generated);
+        Assert.Contains("public static MyService Default2 { get; } = new MyService(1f);", generated);
+        Assert.Contains("public static MyService Default3 { get; } = new MyService(\"1\");", generated);
     }
 
     [Fact]
@@ -341,7 +341,7 @@ public class GeneratorTests(ITestOutputHelper output)
         string generated = TestHelpers.RunGenerator(source);
         output.WriteLine(generated);
 
-        Assert.Contains("new()", generated);
+        Assert.Contains("new MyService()", generated);
         Assert.DoesNotContain("null)", generated);
     }
 }

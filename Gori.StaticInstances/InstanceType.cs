@@ -1,9 +1,14 @@
+#pragma warning disable IDE0001
 namespace Gori.StaticInstances;
+
+/*
+ * Following code should also be copied into Const.InstanceTypeCode
+ */
 
 /// <summary>
 /// Change how static instance will be generated.
 /// </summary>
-public enum InstanceType
+internal enum InstanceType
 {
     /// <summary>
     /// Instance will be created as a property.
@@ -21,17 +26,17 @@ public enum InstanceType
     Field,
 
     /// <summary>
-    /// Property backed by <see cref="Lazy{T}"/>.
+    /// Property backed by <see cref="global::System.Lazy{T}"/>.
     /// </summary>
     Lazy,
 
     /// <summary>
-    /// Property backed by <see cref="WeakReference{T}"/> with locking when needing to initialize new instance.
+    /// Property backed by <see cref="global::System.WeakReference{T}"/> with locking when needing to initialize new instance.
     /// </summary>
     Weak,
 
     /// <summary>
-    /// Property backed by <see cref="WeakReference{T}"/>. Non-Thread-Safe version of <see cref="Weak"/>.
+    /// Property backed by <see cref="global::System.WeakReference{T}"/>. Non-Thread-Safe version of <see cref="Weak"/>.
     /// </summary>
     WeakLockless,
 }

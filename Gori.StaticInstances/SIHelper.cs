@@ -1,4 +1,6 @@
+using System;
 using System.Globalization;
+using System.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -50,10 +52,10 @@ internal static class SIHelper
     /// <returns>Appropriate null or default value for the type.</returns>
     public static string GetNullValue(ITypeSymbol? paramType)
         => paramType is not null
-               ? paramType.IsValueType
-                   ? $"({paramType.ToDisplayString()})default"
-                   : $"({paramType.ToDisplayString()})null"
-               : "default";
+            ? paramType.IsValueType
+                ? $"({paramType.ToDisplayString()})default"
+                : $"({paramType.ToDisplayString()})null"
+            : "default";
 
     /// <summary>
     /// Converts symbol's TypeKind into the C# syntax for it. (class, struct, record, record struct)

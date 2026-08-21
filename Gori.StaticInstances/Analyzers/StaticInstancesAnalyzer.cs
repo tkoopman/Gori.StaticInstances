@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -11,7 +14,7 @@ namespace Gori.StaticInstances.Analyzers;
 /// Performs code analysis for <see cref="SingletonAttribute"/> and <see cref="StaticInstanceAttribute"/>.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class SingletonAnalyzer : DiagnosticAnalyzer
+public class StaticInstancesAnalyzer : DiagnosticAnalyzer
 {
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
@@ -26,6 +29,7 @@ public class SingletonAnalyzer : DiagnosticAnalyzer
         DiagnosticDescriptors.ArgumentTypeMismatch,
         DiagnosticDescriptors.ValueArgumentIsNull,
         DiagnosticDescriptors.StaticInstanceOnPrimaryConstructor,
+        DiagnosticDescriptors.LanguageVersionTooLow,
     ];
 
     /// <inheritdoc/>
@@ -170,6 +174,7 @@ public class SingletonAnalyzer : DiagnosticAnalyzer
         ReportIfNotPartial(context, typeSymbol);
         ReportIfDuplicateInstanceNames(context, typeSymbol, singletonAttr);
         ReportIfIdenticalInstances(context, typeSymbol, singletonAttr);
+        ReportIfLanguageVersionTooLow(context, typeSymbol, singletonAttr);
 
         // Check each ancestor containing type
         INamedTypeSymbol? containingType = typeSymbol.ContainingType;
@@ -211,6 +216,34 @@ public class SingletonAnalyzer : DiagnosticAnalyzer
         }
     }
 
+    private static void ReportIfLanguageVersionTooLow(SymbolAnalysisContext context, INamedTypeSymbol typeSymbol, AttributeData? attr)
+    {
+        if (context.Compilation is not CSharpCompilation csharpCompilation)
+        {
+            return;
+        }
+
+        LanguageVersion langVersion = csharpCompilation.LanguageVersion;
+
+        AssemblyIdentity? systemRuntime = context.Compilation.ReferencedAssemblyNames
+            .FirstOrDefault(a => string.Equals(a.Name, "System.Runtime", StringComparison.OrdinalIgnoreCase));
+        bool isDotNet9OrHigher = systemRuntime?.Version?.Major >= 9;
+
+        LanguageVersion minimumVersion = isDotNet9OrHigher ? LanguageVersion.CSharp13 : LanguageVersion.CSharp11;
+
+        if (langVersion < minimumVersion)
+        {
+            Location location = attr is not null
+                ? GetAttributeLocation(attr, typeSymbol)
+                : typeSymbol.Locations.FirstOrDefault() ?? Location.None;
+            context.ReportDiagnostic(Diagnostic.Create(
+                DiagnosticDescriptors.LanguageVersionTooLow,
+                location,
+                langVersion.ToDisplayString(),
+                minimumVersion.ToDisplayString()));
+        }
+    }
+
     private static bool IsValidCSharpIdentifier(string name)
         => !string.IsNullOrEmpty(name)
         && SyntaxFacts.IsValidIdentifier(name)
@@ -222,7 +255,7 @@ public class SingletonAnalyzer : DiagnosticAnalyzer
 
     private static void ReportIfInvalidName(SymbolAnalysisContext context, INamedTypeSymbol typeSymbol, AttributeData attr)
     {
-        string? name = attr.NamedArguments.FirstOrDefault(a => a.Key == nameof(IStaticInstanceOptions.Name)).Value.Value as string;
+        string? name = attr.NamedArguments.FirstOrDefault(a => a.Key == nameof(StaticInstanceAttribute.Name)).Value.Value as string;
         if (name is null or Const.DefaultSingletonPropertyName)
         {
             return; // default — always valid
@@ -247,7 +280,7 @@ public class SingletonAnalyzer : DiagnosticAnalyzer
         {
             string singletonName = singletonAttr.ConstructorArguments.Length >= 1 && singletonAttr.ConstructorArguments[0].Value is string ctorName
                 ? ctorName
-                : singletonAttr.NamedArguments.FirstOrDefault(a => a.Key == nameof(IStaticInstanceOptions.Name)).Value.Value as string
+                : singletonAttr.NamedArguments.FirstOrDefault(a => a.Key == nameof(StaticInstanceAttribute.Name)).Value.Value as string
                   ?? Const.DefaultSingletonPropertyName;
 
             _ = seen.Add(singletonName);
@@ -263,7 +296,7 @@ public class SingletonAnalyzer : DiagnosticAnalyzer
                     continue;
                 }
 
-                string siName = siAttr.NamedArguments.FirstOrDefault(a => a.Key == nameof(IStaticInstanceOptions.Name)).Value.Value as string ?? string.Empty;
+                string siName = siAttr.NamedArguments.FirstOrDefault(a => a.Key == nameof(StaticInstanceAttribute.Name)).Value.Value as string ?? string.Empty;
 
                 if (string.IsNullOrEmpty(siName))
                 {
@@ -382,7 +415,7 @@ public class SingletonAnalyzer : DiagnosticAnalyzer
     private static void ReportIfArgumentMismatch(SymbolAnalysisContext context, IMethodSymbol ctor, AttributeData siAttr)
     {
         int paramCount = ctor.Parameters.Length;
-        string instanceName = siAttr.NamedArguments.FirstOrDefault(a => a.Key == nameof(IStaticInstanceOptions.Name)).Value.Value as string ?? string.Empty;
+        string instanceName = siAttr.NamedArguments.FirstOrDefault(a => a.Key == nameof(StaticInstanceAttribute.Name)).Value.Value as string ?? string.Empty;
 
         TypedConstant paramsArg = siAttr.ConstructorArguments.Length >= 1 ? siAttr.ConstructorArguments[0] : default;
 

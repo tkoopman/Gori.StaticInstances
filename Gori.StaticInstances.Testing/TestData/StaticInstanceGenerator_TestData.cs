@@ -14,7 +14,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
         #nullable enable
         partial class MyService
         {
-            public static MyService MyInstance { get; } = new();
+            public static MyService MyInstance { get; } = new MyService();
         }
         """;
 
@@ -42,7 +42,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                 #nullable enable
                 partial class MyService
                 {
-                    private static readonly WeakReference<MyService> _myInstance = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance = new WeakReference<MyService>(null!);
 
                     internal static MyService MyInstance
                     {
@@ -53,7 +53,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                                 return currentInstance;
                             }
 
-                            currentInstance = new();
+                            currentInstance = new MyService();
                             _myInstance.SetTarget(currentInstance);
                             return currentInstance;
                         }
@@ -82,12 +82,12 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                 partial class MyService
                 {
                 #if NET9_0_OR_GREATER
-                    private static readonly Lock _weakLock = new();
+                    private static readonly Lock _weakLock = new Lock();
                 #else
-                    private static readonly object _weakLock = new();
+                    private static readonly object _weakLock = new object();
                 #endif
 
-                    private static readonly WeakReference<MyService> _myInstance = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance = new WeakReference<MyService>(null!);
 
                     internal static MyService MyInstance
                     {
@@ -105,7 +105,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                                     return currentInstance;
                                 }
 
-                                currentInstance = new();
+                                currentInstance = new MyService();
                                 _myInstance.SetTarget(currentInstance);
                                 return currentInstance;
                             }
@@ -171,7 +171,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
 
                 partial class MyService
                 {
-                    public static MyService MyInstance { get; } = new(100);
+                    public static MyService MyInstance { get; } = new MyService(100);
                 }
                 """,
         })
@@ -195,7 +195,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                 #nullable enable
                 partial class MyService<T>
                 {
-                    public static MyService<T> MyInstance { get; } = new();
+                    public static MyService<T> MyInstance { get; } = new MyService<T>();
                 }
                 """,
         })
@@ -224,7 +224,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                 {
                     partial class MyService
                     {
-                        public static MyService MyInstance { get; } = new();
+                        public static MyService MyInstance { get; } = new MyService();
                     }
                 }
                 """,
@@ -254,7 +254,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                 {
                     partial class Inner
                     {
-                        public static Inner MyInstance { get; } = new();
+                        public static Inner MyInstance { get; } = new Inner();
                     }
                 }
                 """,
@@ -289,7 +289,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                     {
                         partial class Child
                         {
-                            public static Child MyInstance { get; } = new();
+                            public static Child MyInstance { get; } = new Child();
                         }
                     }
                 }
@@ -338,7 +338,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                 #nullable enable
                 partial class MyService
                 {
-                    internal static MyService MyInstance { get; } = new();
+                    internal static MyService MyInstance { get; } = new MyService();
                 }
                 """,
         })
@@ -387,12 +387,12 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                 partial class MyService
                 {
                 #if NET9_0_OR_GREATER
-                    private static readonly Lock _weakLock = new();
+                    private static readonly Lock _weakLock = new Lock();
                 #else
-                    private static readonly object _weakLock = new();
+                    private static readonly object _weakLock = new object();
                 #endif
 
-                    private static readonly WeakReference<MyService> _myInstance = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance = new WeakReference<MyService>(null!);
 
                     public static MyService MyInstance
                     {
@@ -410,7 +410,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                                     return currentInstance;
                                 }
 
-                                currentInstance = new();
+                                currentInstance = new MyService();
                                 _myInstance.SetTarget(currentInstance);
                                 return currentInstance;
                             }
@@ -440,7 +440,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
 
                 partial class MyService
                 {
-                    private static readonly WeakReference<MyService> _myInstance = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance = new WeakReference<MyService>(null!);
 
                     public static MyService MyInstance
                     {
@@ -451,7 +451,7 @@ public class StaticInstanceGenerator_TestData : IEnumerable<TheoryDataRow<ISimpl
                                 return currentInstance;
                             }
 
-                            currentInstance = new();
+                            currentInstance = new MyService();
                             _myInstance.SetTarget(currentInstance);
                             return currentInstance;
                         }

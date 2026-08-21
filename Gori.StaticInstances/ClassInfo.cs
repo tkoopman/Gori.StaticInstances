@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+
 using Microsoft.CodeAnalysis;
 
 namespace Gori.StaticInstances;
 
-public partial class SingletonGenerator
+public partial class StaticInstancesGenerator
 {
     /// <summary>
     /// Stores class info including list of all defined <see cref="StaticInstanceAttribute"/> and <see cref="SingletonAttribute"/> attributes.

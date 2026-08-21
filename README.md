@@ -96,17 +96,18 @@ Controls when `[Singleton]` should create a private default constructor for the 
 
 ## Analyzer IDs
 
-| Rule ID | Severity | Description                                                                                                                                                |
-| ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| GSSI001 | Error    | Class is missing the partial modifier                                                                                                                      |
-| GSSI002 | Error    | `[Singleton]` used but no default constructor. Will not be raised if `Constructor = On`                                                                    |
-| GSSI003 | Info     | `[Singleton]` used on class with existing default constructor that is not private or protected                                                             |
-| GSSI004 | Error    | Name contains invalid characters                                                                                                                           |
-| GSSI005 | Error    | Multiple attributes on class with identical names                                                                                                          |
-| GSSI006 | Warning  | Two or more attributes added to the same constructor, with the same arguments                                                                              |
-| GSSI007 | Error    | Number of arguments defined on `[StaticInstance]` does not match the number of parameters on the constructor                                               |
-| GSSI008 | Warning  | An argument type added to `[StaticInstance]` is of a different type defined for the parameter on the constructor. Will attempt to convert                  |
-| GSSI009 | Info     | An argument added to `[StaticInstance]` is null but is mapped to a value type parameter on the constructor. Will use default value                         |
-| GSSI010 | Error    | `[method: StaticInstance]` added to primary constructor. Due to [Roslyn issue #80511](https://github.com/dotnet/roslyn/issues/80511) this is not supported |
+| Rule ID | Severity | Description                                                                                                                                                 |
+| ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GSSI001 | Error    | Class is missing the partial modifier.                                                                                                                      |
+| GSSI002 | Error    | `[Singleton]` used but no default constructor. Will not be raised if `Constructor = On`.                                                                    |
+| GSSI003 | Info     | `[Singleton]` used on class with existing default constructor that is not private or protected.                                                             |
+| GSSI004 | Error    | Name contains invalid characters.                                                                                                                           |
+| GSSI005 | Error    | Multiple attributes on class with identical names.                                                                                                          |
+| GSSI006 | Warning  | Two or more attributes added to the same constructor, with the same arguments.                                                                              |
+| GSSI007 | Error    | Number of arguments defined on `[StaticInstance]` does not match the number of parameters on the constructor.                                               |
+| GSSI008 | Warning  | An argument type added to `[StaticInstance]` is of a different type defined for the parameter on the constructor. Will attempt to convert.                  |
+| GSSI009 | Info     | An argument added to `[StaticInstance]` is null but is mapped to a value type parameter on the constructor. Will use default value.                         |
+| GSSI010 | Error    | `[method: StaticInstance]` added to primary constructor. Due to [Roslyn issue #80511](https://github.com/dotnet/roslyn/issues/80511) this is not supported. |
+| GSSI011 | Error    | The source generator requires at least C# 11.0, or C# 13.0 when targeting .NET 9 or higher. Increase the LangVersion property in your project file.         |
 
 ---

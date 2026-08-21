@@ -36,36 +36,58 @@ internal static class TestHelpers
 
     /// <summary>Creates an in-memory <see cref="CSharpCompilation"/> from a source string.</summary>
     public static CSharpCompilation CreateCompilation(string source)
+        => CreateCompilation(source, LanguageVersion.Default);
+
+    /// <summary>Creates an in-memory <see cref="CSharpCompilation"/> from a source string with a specific language version.</summary>
+    public static CSharpCompilation CreateCompilation(string source, LanguageVersion languageVersion)
         => CSharpCompilation.Create(
             "TestAssembly",
-            [CSharpSyntaxTree.ParseText(source)],
+            [CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(languageVersion))],
             GetBaseReferences(),
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
     /// <summary>
-    /// Runs <see cref="SingletonGenerator"/> against <paramref name="source"/> and returns
+    /// Creates an in-memory <see cref="CSharpCompilation"/> from a source string, with all
+    /// <see cref="StaticInstancesGenerator"/> post-initialization outputs (e.g. attribute
+    /// definitions) already applied. Use this when the compilation must resolve the generated
+    /// attributes before running an analyzer.
+    /// </summary>
+    public static CSharpCompilation CreateCompilationWithGeneratedSources(string source, LanguageVersion languageVersion = LanguageVersion.Default)
+    {
+        CSharpCompilation compilation = CreateCompilation(source, languageVersion);
+        var generator = new StaticInstancesGenerator();
+        var driver = CSharpGeneratorDriver.Create(generator);
+        _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out _);
+        return (CSharpCompilation)outputCompilation;
+    }
+
+    /// <summary>
+    /// Runs <see cref="StaticInstancesGenerator"/> against <paramref name="source"/> and returns
     /// the concatenated text of all generated files, or <see cref="string.Empty"/> if nothing
     /// was generated. Use <see cref="RunGeneratorTrees"/> when you need per-file access.
     /// </summary>
     public static string RunGenerator(string source)
     {
         IReadOnlyList<string> trees = RunGeneratorTrees(source);
+
         return trees.Count > 0
             ? string.Concat(trees)
             : string.Empty;
     }
 
     /// <summary>
-    /// Runs <see cref="SingletonGenerator"/> against <paramref name="source"/> and returns
+    /// Runs <see cref="StaticInstancesGenerator"/> against <paramref name="source"/> and returns
     /// the text of each generated file as a separate entry, in generation order.
     /// </summary>
     public static IReadOnlyList<string> RunGeneratorTrees(string source)
     {
         CSharpCompilation compilation = CreateCompilation(source);
-        var generator  = new SingletonGenerator();
+        var generator  = new StaticInstancesGenerator();
         var driver     = CSharpGeneratorDriver.Create(generator);
         driver = (CSharpGeneratorDriver)driver.RunGeneratorsAndUpdateCompilation(compilation, out _, out _);
         GeneratorDriverRunResult result = driver.GetRunResult();
-        return [.. result.GeneratedTrees.Select(t => t.GetText().ToString())];
+        return [.. result.GeneratedTrees
+                         .Where(t => !t.FilePath.EndsWith("Microsoft.CodeAnalysis.EmbeddedAttribute.cs", StringComparison.Ordinal) && !t.FilePath.EndsWith("Gori.StaticInstances.Attributes.g.cs", StringComparison.Ordinal))
+                         .Select(t => t.GetText().ToString())];
     }
 }

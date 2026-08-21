@@ -16,8 +16,8 @@ public class AnalyzerTests(ITestOutputHelper output)
 {
     private static async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(string source)
     {
-        CSharpCompilation compilation  = TestHelpers.CreateCompilation(source);
-        CompilationWithAnalyzers withAnalyzers = compilation.WithAnalyzers([new SingletonAnalyzer()]);
+        CSharpCompilation compilation  = TestHelpers.CreateCompilationWithGeneratedSources(source);
+        CompilationWithAnalyzers withAnalyzers = compilation.WithAnalyzers([new StaticInstancesAnalyzer()]);
         return await withAnalyzers.GetAnalyzerDiagnosticsAsync();
     }
 
@@ -85,5 +85,24 @@ public class AnalyzerTests(ITestOutputHelper output)
             int expected = expectedDiagnostics.Count(d => d.Position >= 0 && d.ID.StartsWith(fullCoveragePrefix, StringComparison.Ordinal));
             Assert.Equal(expected, found);
         }
+    }
+
+    [Fact]
+    public async Task LanguageVersionTooLow_ReportsDiagnosticGSSI011()
+    {
+        const string source = """
+            using Gori.StaticInstances;
+
+            [Singleton]
+            public partial class MyService { }
+            """;
+
+        // Not using CreateCompilationWithGeneratedSources as would generate errors that don't reflex real testing.
+        CSharpCompilation compilation = TestHelpers.CreateCompilation(source, LanguageVersion.CSharp10);
+        CompilationWithAnalyzers withAnalyzers = compilation.WithAnalyzers([new StaticInstancesAnalyzer()]);
+        ImmutableArray<Diagnostic> diagnostics = await withAnalyzers.GetAnalyzerDiagnosticsAsync(TestContext.Current.CancellationToken);
+
+        Assert.Contains(diagnostics, d => d.Id == "GSSI011");
+        Assert.Equal(DiagnosticSeverity.Error, diagnostics.First().Severity);
     }
 }

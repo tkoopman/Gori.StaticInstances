@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
-    <ProjectReference Include="..\Gori.StaticInstances.Attributes\Gori.StaticInstances.Attributes.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Gori.StaticInstances\Gori.StaticInstances.csproj" OutputItemType="Analyzer" />
     <!-- Load analyzer dependencies into the compiler host so SingletonGenerator can resolve them -->
     <PackageReference Include="Gori.CodeStringBuilder" Version="1.0.0" PrivateAssets="all" GeneratePathProperty="true" />

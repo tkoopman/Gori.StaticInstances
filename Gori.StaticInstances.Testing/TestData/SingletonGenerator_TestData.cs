@@ -15,7 +15,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
         partial class MyService
         {
             private MyService () { }
-            public static MyService Instance { get; } = new();
+            public static MyService Instance { get; } = new MyService();
         }
         """;
 
@@ -40,7 +40,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 #nullable enable
                 partial class MyService
                 {
-                    private static readonly WeakReference<MyService> _myInstance = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance = new WeakReference<MyService>(null!);
 
                     internal static MyService MyInstance
                     {
@@ -51,7 +51,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                                 return currentInstance;
                             }
 
-                            currentInstance = new();
+                            currentInstance = new MyService();
                             _myInstance.SetTarget(currentInstance);
                             return currentInstance;
                         }
@@ -79,12 +79,12 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                     private MyService () { }
 
                 #if NET9_0_OR_GREATER
-                    private static readonly Lock _weakLock = new();
+                    private static readonly Lock _weakLock = new Lock();
                 #else
-                    private static readonly object _weakLock = new();
+                    private static readonly object _weakLock = new object();
                 #endif
 
-                    private static readonly WeakReference<MyService> _myInstance = new(null!);
+                    private static readonly WeakReference<MyService> _myInstance = new WeakReference<MyService>(null!);
 
                     internal static MyService MyInstance
                     {
@@ -102,7 +102,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                                     return currentInstance;
                                 }
 
-                                currentInstance = new();
+                                currentInstance = new MyService();
                                 _myInstance.SetTarget(currentInstance);
                                 return currentInstance;
                             }
@@ -166,7 +166,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
 
                 partial class MyService
                 {
-                    public static MyService Instance { get; } = new();
+                    public static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -191,7 +191,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
 
                 partial class MyService
                 {
-                    public static MyService Instance { get; } = new();
+                    public static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -216,7 +216,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
 
                 partial class MyService
                 {
-                    public static MyService Instance { get; } = new();
+                    public static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -238,7 +238,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 partial class MyService<T>
                 {
                     private MyService () { }
-                    public static MyService<T> Instance { get; } = new();
+                    public static MyService<T> Instance { get; } = new MyService<T>();
                 }
                 """,
         })
@@ -265,7 +265,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                     partial class MyService
                     {
                         private MyService () { }
-                        public static MyService Instance { get; } = new();
+                        public static MyService Instance { get; } = new MyService();
                     }
                 }
                 """,
@@ -293,7 +293,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                     partial class Inner
                     {
                         private Inner () { }
-                        public static Inner Instance { get; } = new();
+                        public static Inner Instance { get; } = new Inner();
                     }
                 }
                 """,
@@ -326,7 +326,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                         partial class Child
                         {
                             private Child () { }
-                            public static Child Instance { get; } = new();
+                            public static Child Instance { get; } = new Child();
                         }
                     }
                 }
@@ -355,7 +355,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                     partial class Inner
                     {
                         private Inner () { }
-                        public static Inner Instance { get; } = new();
+                        public static Inner Instance { get; } = new Inner();
                     }
                 }
                 """,
@@ -383,7 +383,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                     partial class Inner<T>
                     {
                         private Inner () { }
-                        public static Inner<T> Instance { get; } = new();
+                        public static Inner<T> Instance { get; } = new Inner<T>();
                     }
                 }
                 """,
@@ -411,7 +411,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                     partial class Inner<TValue>
                     {
                         private Inner () { }
-                        public static Inner<TValue> Instance { get; } = new();
+                        public static Inner<TValue> Instance { get; } = new Inner<TValue>();
                     }
                 }
                 """,
@@ -453,7 +453,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 #nullable enable
                 partial class MyService
                 {
-                    public static MyService Instance { get; } = new();
+                    public static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -474,7 +474,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 #nullable enable
                 partial class MyService
                 {
-                    public static MyService Instance { get; } = new();
+                    public static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -498,7 +498,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 #nullable enable
                 partial class MyService
                 {
-                    public static MyService Instance { get; } = new();
+                    public static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -523,7 +523,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 partial class MyService
                 {
                     private MyService () { }
-                    public static MyService Instance { get; } = new();
+                    public static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -545,7 +545,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 partial class MyService
                 {
                     private MyService () { }
-                    public static MyService Instance { get; } = new();
+                    public static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -573,7 +573,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 partial class MyService
                 {
                     private MyService () { }
-                    public static MyService MyInstance { get; } = new();
+                    public static MyService MyInstance { get; } = new MyService();
                 }
                 """,
         })
@@ -615,7 +615,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 partial class MyService
                 {
                     private MyService () { }
-                    internal static MyService Instance { get; } = new();
+                    internal static MyService Instance { get; } = new MyService();
                 }
                 """,
         })
@@ -643,7 +643,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 partial class MyService
                 {
                     private MyService () { }
-                    internal static MyService MyInstance { get; } = new();
+                    internal static MyService MyInstance { get; } = new MyService();
                 }
                 """,
         })
@@ -687,7 +687,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 {
                     private MyService () { }
 
-                    public static readonly MyService Instance = new();
+                    public static readonly MyService Instance = new MyService();
                 }
                 """,
         })
@@ -711,7 +711,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 {
                     private MyService () { }
 
-                    private static readonly Lazy<MyService> _instance = new(() => new());
+                    private static readonly Lazy<MyService> _instance = new Lazy<MyService>(() => new MyService());
 
                     public static MyService Instance => _instance.Value;
                 }
@@ -738,12 +738,12 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                     private MyService () { }
 
                 #if NET9_0_OR_GREATER
-                    private static readonly Lock _weakLock = new();
+                    private static readonly Lock _weakLock = new Lock();
                 #else
-                    private static readonly object _weakLock = new();
+                    private static readonly object _weakLock = new object();
                 #endif
 
-                    private static readonly WeakReference<MyService> _instance = new(null!);
+                    private static readonly WeakReference<MyService> _instance = new WeakReference<MyService>(null!);
 
                     public static MyService Instance
                     {
@@ -761,7 +761,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                                     return currentInstance;
                                 }
 
-                                currentInstance = new();
+                                currentInstance = new MyService();
                                 _instance.SetTarget(currentInstance);
                                 return currentInstance;
                             }
@@ -789,7 +789,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                 partial class MyService
                 {
                     private MyService () { }
-                    private static readonly WeakReference<MyService> _instance = new(null!);
+                    private static readonly WeakReference<MyService> _instance = new WeakReference<MyService>(null!);
 
                     public static MyService Instance
                     {
@@ -800,7 +800,7 @@ public class SingletonGenerator_TestData : IEnumerable<TheoryDataRow<ISimpleTest
                                 return currentInstance;
                             }
 
-                            currentInstance = new();
+                            currentInstance = new MyService();
                             _instance.SetTarget(currentInstance);
                             return currentInstance;
                         }

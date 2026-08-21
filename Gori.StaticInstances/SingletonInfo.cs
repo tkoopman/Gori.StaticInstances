@@ -1,6 +1,6 @@
 namespace Gori.StaticInstances;
 
-public partial class SingletonGenerator
+public partial class StaticInstancesGenerator
 {
     private sealed class SingletonInfo(string instanceName, InstanceType instanceType, bool @internal, bool addConstructor, string constructorArgs) : IInstanceInfo
     {

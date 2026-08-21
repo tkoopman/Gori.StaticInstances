@@ -1,0 +1,14 @@
+
+###################################################
+# Overrides from normal settings for this project
+###################################################
+
+[*.cs]
+csharp_style_namespace_declarations = block_scoped:error
+csharp_style_prefer_primary_constructors = false:none
+
+# Completely turn off the IDE0290 diagnostic warning
+dotnet_diagnostic.IDE0290.severity = none
+
+# CA1052: Static holder types should be Static or NotInheritable
+dotnet_diagnostic.CA1052.severity = none

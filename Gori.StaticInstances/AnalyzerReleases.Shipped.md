@@ -17,3 +17,11 @@ GSSI007 | Gori.StaticInstances | Error | ArgumentCountMismatch
 GSSI008 | Gori.StaticInstances | Warning | ArgumentTypeMismatch
 GSSI009 | Gori.StaticInstances | Info | ValueArgumentIsNull
 GSSI010 | Gori.StaticInstances | Error | StaticInstanceOnPrimaryConstructor
+
+## Release 1.0.2
+
+### New Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+GSSI011 | Gori.StaticInstances | Error | LanguageVersionTooLow

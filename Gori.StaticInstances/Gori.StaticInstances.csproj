@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Disabled ImplicitUsings to force use of global:: where code is copied into source generator -->
+    <ImplicitUsings>disable</ImplicitUsings>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <!-- Generates a package at build -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -23,7 +24,7 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <RepositoryUrl>https://github.com/tkoopman/Gori.StaticInstances</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,14 +38,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- Build the Attributes project so its DLL can be bundled in lib/netstandard2.0 for end-user IntelliSense,
-         but do not reference its output for compilation since the types are duplicated here for the analyzer. -->
-    <ProjectReference Include="..\Gori.StaticInstances.Attributes\Gori.StaticInstances.Attributes.csproj"
-                      ReferenceOutputAssembly="false"
-                      Private="false" />
-  </ItemGroup>
-
   <!-- Custom MSBuild targets to control NuGet packaging paths -->
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackGeneratorAndAttributes</TargetsForTfmSpecificContentInPackage>
@@ -53,8 +46,6 @@
     <ItemGroup>
       <!-- Package the generator in the analyzer directory of the nuget package -->
       <TfmSpecificPackageFile Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-      <!-- Bundle Gori.StaticInstances.Attributes so attributes are available to user -->
-      <TfmSpecificPackageFile Include="..\Gori.StaticInstances.Attributes\bin\$(Configuration)\netstandard2.0\Gori.StaticInstances.Attributes.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="false" />
       <!-- Bundle Gori.CodeStringBuilder so it is available as part of the analyzer -->
       <TfmSpecificPackageFile Include="$(PkgGori_CodeStringBuilder)\lib\netstandard2.0\Gori.CodeStringBuilder.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
       <!-- Bundle Microsoft.Bcl.Memory (transitive dependency of Gori.CodeStringBuilder) -->
@@ -74,5 +65,4 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
 </Project>

@@ -1,4 +1,9 @@
 namespace Gori.StaticInstances;
+#pragma warning disable IDE0001
+
+/*
+ * Following code should also be copied into Const.SingletonAttributeCode
+ */
 
 /// <summary>
 /// Attribute placed on a constructor to generate a named static property that creates
@@ -7,8 +12,8 @@ namespace Gori.StaticInstances;
 /// named properties. All names must be unique within the class, including the name
 /// used by <see cref="SingletonAttribute"/>.
 /// </summary>
-[AttributeUsage(AttributeTargets.Constructor, AllowMultiple = true, Inherited = false)]
-public sealed class StaticInstanceAttribute : Attribute, IStaticInstanceOptions
+[global::System.AttributeUsage(global::System.AttributeTargets.Constructor, AllowMultiple = true, Inherited = false)]
+internal sealed class StaticInstanceAttribute : global::System.Attribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="StaticInstanceAttribute"/> class.
@@ -18,12 +23,20 @@ public sealed class StaticInstanceAttribute : Attribute, IStaticInstanceOptions
     {
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets or sets the name that should be assigned to the static instance property.
+    /// Must be a valid C# identifier that is not a reserved or contextual keyword.
+    /// </summary>
     public required string Name { get; set; }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets or sets the type of static instance to generate.
+    /// </summary>
     public InstanceType Type { get; set; }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets or sets a value indicating whether the accessibility modifier given to the static
+    /// instance property should be internal, instead of the default public.
+    /// </summary>
     public bool Internal { get; set; }
 }

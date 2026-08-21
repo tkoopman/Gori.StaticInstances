@@ -61,7 +61,7 @@ indent_style = tab
 
 [*]
 vsspell_section_id = 0415f94bde664cd2a50b411244b9eedb
-vsspell_ignored_words_0415f94bde664cd2a50b411244b9eedb = gssi|kvp|spc|Lockless
+vsspell_ignored_words_0415f94bde664cd2a50b411244b9eedb = csharp|gssi|kvp|spc|Lockless
 vsspell_ignored_keywords_0415f94bde664cd2a50b411244b9eedb =
 
 vsspell_spell_check_as_you_type = true

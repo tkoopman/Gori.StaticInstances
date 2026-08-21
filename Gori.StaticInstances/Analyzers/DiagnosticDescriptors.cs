@@ -134,4 +134,16 @@ internal static class DiagnosticDescriptors
     defaultSeverity: DiagnosticSeverity.Error,
     isEnabledByDefault: true,
     description: "Due to Roslyn issue #80511, the [method: StaticInstance] attribute-target specifier on a primary constructor is not supported by the generator. Declare an explicit constructor and place [StaticInstance] directly on it.");
+
+    /// <summary>
+    /// The C# language version is too low for the target framework.
+    /// </summary>
+    public static readonly DiagnosticDescriptor LanguageVersionTooLow = new(
+    id: $"{Const.DiagnosticDescriptorIDPrefix}011",
+    title: "C# language version too low",
+    messageFormat: "C# language version '{0}' is too low; {1} or higher is required for the current target framework",
+    category: Const.DiagnosticDescriptorCategory,
+    defaultSeverity: DiagnosticSeverity.Error,
+    isEnabledByDefault: true,
+    description: "The source generator requires at least C# 11.0, or C# 13.0 when targeting .NET 9 or higher. Increase the LangVersion property in your project file.");
 }
