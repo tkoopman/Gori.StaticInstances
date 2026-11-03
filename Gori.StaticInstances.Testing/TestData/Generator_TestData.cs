@@ -1,21 +1,24 @@
 using System.Collections;
 
+using Gori.Common.Roslyn.Test;
+
 namespace Gori.StaticInstances.Testing.TestData;
 
-public class Generator_TestData : IEnumerable<TheoryDataRow<ISimpleTestData>>
+public class Generator_TestData : IEnumerable<TheoryDataRow<MockSourceData>>
 {
     public const string TestPrefix = "Generator";
 
     public const string Category = "Generator";
 
-    public IEnumerator<TheoryDataRow<ISimpleTestData>> GetEnumerator()
+    public IEnumerator<TheoryDataRow<MockSourceData>> GetEnumerator()
     {
-        yield return new(new CSharpSyntaxTestData()
+        yield return new(new MockSourceData()
         {
-            Input = """
-                public partial class MyService { }
-                """,
-            Expected = string.Empty,
+            SourceCode =
+            """
+            public partial class MyService { }
+            """,
+            Expectations = [FileExpectation.NoOthers],
         })
         {
             Traits = { { "Category", [Category] } },

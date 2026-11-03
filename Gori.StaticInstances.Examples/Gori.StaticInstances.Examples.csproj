@@ -8,6 +8,7 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <AnalysisLevel>latest-all</AnalysisLevel>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <FileVersion>1.0.0.26304</FileVersion>
   </PropertyGroup>
 
   <!-- Targets .NET Framework 9.0+: Uses C# 13 -->
@@ -18,8 +19,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Gori.StaticInstances\Gori.StaticInstances.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <!-- Load analyzer dependencies into the compiler host so SingletonGenerator can resolve them -->
-    <PackageReference Include="Gori.CodeStringBuilder" Version="1.0.0" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.10" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Gori.CodeStringBuilder" Version="1.2.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.14" PrivateAssets="all" GeneratePathProperty="true" />
     <Analyzer Include="$(PkgGori_CodeStringBuilder)\lib\netstandard2.0\Gori.CodeStringBuilder.dll" />
     <Analyzer Include="$(PkgMicrosoft_Bcl_Memory)\lib\netstandard2.0\Microsoft.Bcl.Memory.dll" />
   </ItemGroup>

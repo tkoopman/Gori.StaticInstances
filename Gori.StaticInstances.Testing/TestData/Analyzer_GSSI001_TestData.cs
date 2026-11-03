@@ -1,22 +1,32 @@
 using System.Collections;
 
+using Gori.Common.Roslyn.Test;
+using Gori.StaticInstances.Analyzers;
+
 using Microsoft.CodeAnalysis;
 
 namespace Gori.StaticInstances.Testing.TestData;
 
-public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<string, AnalyzerMatchIdData[], string?>>
+public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<MockSourceData>>
 {
-    public const string Prefix = "GSSI";
-    public const string ID = "GSSI001";
-    public const string Category = $"Analyzer\\{ID}";
+    public static readonly DiagnosticDescriptor Target = DiagnosticDescriptors.NonPartialType;
+    public static readonly HashSet<string> Category = [$"Analyzer\\{Target.Id}"];
+    public static readonly DiagnosticExpectation NotTargetId = new DiagnosticExpectation()
+    {
+        IsExpected = false,
+        Id = Target.Id,
+    };
 
-    public IEnumerator<TheoryDataRow<string, AnalyzerMatchIdData[], string?>> GetEnumerator()
+    public IEnumerator<TheoryDataRow<MockSourceData>> GetEnumerator()
     {
         // -------------------------------------------------------------------------
         // Both attributes checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             public class MyService 
@@ -27,45 +37,103 @@ public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public MyService(int value) { }
             }
             """,
+
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 55, AdditionalPositions = [], Contains = ["MyService"], Severity = DiagnosticSeverity.Error },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 55,
+                    AdditionalPositions = [],
+                    Message = "MyService",
+                    CodeFixExpectations =
+                    [
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = true,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public partial class MyService",
+                        },
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = false,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public class MyService",
+                        },
+                    ],
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on non-partial class with both [Singleton] and [StaticInstance]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on non-partial class with both [Singleton] and [StaticInstance]",
         };
 
         // -------------------------------------------------------------------------
         // Singleton checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             public class MyService { }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 55, AdditionalPositions = [], Contains = ["MyService"], Severity = DiagnosticSeverity.Error },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 55,
+                    AdditionalPositions = [],
+                    Message = "MyService",
+                    CodeFixExpectations =
+                    [
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = true,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public partial class MyService",
+                        },
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = false,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public class MyService",
+                        },
+                    ],
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on non-partial class with [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on non-partial class with [Singleton]",
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             public partial class MyService { }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() {ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on partial class with [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on partial class with [Singleton]",
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public class Outer
             {
@@ -73,15 +141,41 @@ public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public partial class Inner { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 42, AdditionalPositions = [], Contains = ["Outer"], Severity = DiagnosticSeverity.Error },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 42,
+                    AdditionalPositions = [],
+                    Message = "Outer",
+                    CodeFixExpectations =
+                    [
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = true,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public partial class Outer",
+                        },
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = false,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public class Outer",
+                        },
+                    ],
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on non-partial outer class with, nested partial class with [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on non-partial outer class with, nested partial class with [Singleton]",
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public class Outer
             {
@@ -89,16 +183,63 @@ public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public class Inner { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 42, AdditionalPositions = [], Contains = ["Outer"], Severity = DiagnosticSeverity.Error },
-                new AnalyzerMatchIdData() { ID = ID, Position = 86, AdditionalPositions = [], Contains = ["Inner"], Severity = DiagnosticSeverity.Error },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 42,
+                    AdditionalPositions = [],
+                    Message = "Outer",
+                    CodeFixExpectations =
+                    [
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = true,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public partial class Outer",
+                        },
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = false,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public class Outer",
+                        },
+                    ],
+                },
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 86,
+                    AdditionalPositions = [],
+                    Message = "Inner",
+                    CodeFixExpectations =
+                    [
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = true,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public partial class Inner",
+                        },
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = false,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public class Inner",
+                        },
+                    ],
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on non-partial outer and inner classes when, nested class has [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on non-partial outer and inner classes when, nested class has [Singleton]"
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public partial class Outer
             {
@@ -106,19 +247,24 @@ public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public partial class Inner { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on partial outer or inner classes when, nested class has [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on partial outer or inner classes when, nested class has [Singleton]"
         };
 
         // -------------------------------------------------------------------------
         // StaticInstance checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public class MyService 
             {
@@ -126,15 +272,41 @@ public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public MyService() { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 42, AdditionalPositions = [], Contains = ["MyService"], Severity = DiagnosticSeverity.Error },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 42,
+                    AdditionalPositions = [],
+                    Message = "MyService",
+                    CodeFixExpectations =
+                    [
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = true,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public partial class MyService",
+                        },
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = false,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public class MyService",
+                        },
+                    ],
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on non-partial class with [StaticInstance]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on non-partial class with [StaticInstance]"
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public partial class MyService 
             {
@@ -142,15 +314,20 @@ public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public MyService() { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on partial class with [StaticInstance]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on partial class with [StaticInstance]"
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public class Outer
             {
@@ -161,27 +338,55 @@ public class Analyzer_GSSI001_TestData : IEnumerable<TheoryDataRow<string, Analy
                 }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 42, AdditionalPositions = [], Contains = ["Outer"], Severity = DiagnosticSeverity.Error },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 42,
+                    AdditionalPositions = [],
+                    Message = "Outer",
+                    CodeFixExpectations =
+                    [
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = true,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public partial class Outer",
+                        },
+                        new CodeFixExpectation()
+                        {
+                            IsExpected = false,
+                            EquivalenceKey = "MakeTypePartial",
+                            Code = "public class Outer",
+                        },
+                    ],
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on non-partial outer class with, nested partial class with [StaticInstance]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on non-partial outer class with, nested partial class with [StaticInstance]"
         };
 
         // -------------------------------------------------------------------------
         // No attribute checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             public class MyService { }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class when no attributes used"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class when no attributes used"
         };
     }
 

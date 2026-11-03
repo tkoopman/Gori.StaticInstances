@@ -1,5 +1,7 @@
 <Solution>
+  <Project Path="Gori.StaticInstances.CodeFix/Gori.StaticInstances.CodeFix.csproj" Id="1f826bec-bc75-48de-b226-7d11900e4777" />
   <Project Path="Gori.StaticInstances.Examples/Gori.StaticInstances.Examples.csproj" />
+  <Project Path="Gori.StaticInstances.Package/Gori.StaticInstances.Package.csproj" Id="11a0ea2d-cabb-459c-940f-2d0e40e22dd4" />
   <Project Path="Gori.StaticInstances.Testing/Gori.StaticInstances.Testing.csproj" />
   <Project Path="Gori.StaticInstances/Gori.StaticInstances.csproj" />
 </Solution>

@@ -1,28 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <FileVersion>1.0.0.26304</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.6.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.6.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="coverlet.collector" Version="10.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Gori.Common.Roslyn.Test" Version="1.0.6" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="xunit.v3" Version="4.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
-    <ProjectReference Include="..\Gori.StaticInstances\Gori.StaticInstances.csproj" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Gori.StaticInstances.CodeFix\Gori.StaticInstances.CodeFix.csproj" />
+    <ProjectReference Include="..\Gori.StaticInstances\Gori.StaticInstances.csproj" />
     <!-- Load analyzer dependencies into the compiler host so SingletonGenerator can resolve them -->
-    <PackageReference Include="Gori.CodeStringBuilder" Version="1.0.0" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.10" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Gori.CodeStringBuilder" Version="1.2.0" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.14" PrivateAssets="all" GeneratePathProperty="true" />
     <Analyzer Include="$(PkgGori_CodeStringBuilder)\lib\netstandard2.0\Gori.CodeStringBuilder.dll" />
     <Analyzer Include="$(PkgMicrosoft_Bcl_Memory)\lib\netstandard2.0\Microsoft.Bcl.Memory.dll" />
   </ItemGroup>

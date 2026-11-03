@@ -1,14 +1,21 @@
 using System.Collections;
 
+using Gori.Common.Roslyn.Test;
+using Gori.StaticInstances.Analyzers;
+
 using Microsoft.CodeAnalysis;
 
 namespace Gori.StaticInstances.Testing.TestData;
 
-public class Analyzer_GSSI004_TestData : IEnumerable<TheoryDataRow<string, AnalyzerMatchIdData[], string?>>
+public class Analyzer_GSSI004_TestData : IEnumerable<TheoryDataRow<MockSourceData>>
 {
-    public const string Prefix = "GSSI";
-    public const string ID = "GSSI004";
-    public const string Category = $"Analyzer\\{ID}";
+    public static readonly DiagnosticDescriptor Target = DiagnosticDescriptors.InvalidInstanceName;
+    public static readonly HashSet<string> Category = [$"Analyzer\\{Target.Id}"];
+    public static readonly DiagnosticExpectation NotTargetId = new DiagnosticExpectation()
+    {
+        IsExpected = false,
+        Id = Target.Id,
+    };
 
     public static readonly string[] ValidNames =
         [
@@ -27,7 +34,7 @@ public class Analyzer_GSSI004_TestData : IEnumerable<TheoryDataRow<string, Analy
         "default", // Reserved word
         ];
 
-    public IEnumerator<TheoryDataRow<string, AnalyzerMatchIdData[], string?>> GetEnumerator()
+    public IEnumerator<TheoryDataRow<MockSourceData>> GetEnumerator()
     {
         // -------------------------------------------------------------------------
         // Singleton checks
@@ -35,47 +42,68 @@ public class Analyzer_GSSI004_TestData : IEnumerable<TheoryDataRow<string, Analy
 
         foreach (string name in ValidNames)
         {
-            yield return new($$"""
+            yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+            {
+                SourceCode =
+                $$"""
                 using Gori.StaticInstances;
                 [Singleton(Name = "{{name}}")]
                 public partial class MyService { }
                 """,
+                Expectations =
                 [
-                    new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-                ], Prefix)
+                    NotTargetId,
+                ],
+            })
             {
-                Traits = { { "Category", [Category] } },
-                Label = $"{ID}: Not raised on Singleton with valid name of '{name}'"
+                Traits = { { "Category", Category } },
+                Label = $"{Target.Id}: Not raised on Singleton with valid name of '{name}'"
             };
         }
 
         foreach (string name in InvalidNames)
         {
-            yield return new($$"""
+            yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+            {
+                SourceCode =
+                $$"""
                 using Gori.StaticInstances;
                 [Singleton(Name = "{{name}}")]
                 public partial class MyService { }
                 """,
+                Expectations =
                 [
-                    new AnalyzerMatchIdData() { ID = ID, Position = 30, AdditionalPositions = [], Contains = [$"'{name}'"], Severity = DiagnosticSeverity.Error },
-                ], Prefix)
+                    new DiagnosticExpectation(Target)
+                    {
+                        IsExpected = true,
+                        Position = 30,
+                        AdditionalPositions = [],
+                        Message = $"'{name}'",
+                    },
+                ],
+            })
             {
-                Traits = { { "Category", [Category] } },
-                Label = $"{ID}: Raised on Singleton with invalid name of '{name}'"
+                Traits = { { "Category", Category } },
+                Label = $"{Target.Id}: Raised on Singleton with invalid name of '{name}'"
             };
         }
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             public partial class MyService { }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on Singleton with no explicit name"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on Singleton with no explicit name"
         };
 
         // -------------------------------------------------------------------------
@@ -84,7 +112,10 @@ public class Analyzer_GSSI004_TestData : IEnumerable<TheoryDataRow<string, Analy
 
         foreach (string name in ValidNames)
         {
-            yield return new($$"""
+            yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+            {
+                SourceCode =
+                $$"""
                 using Gori.StaticInstances;
                 public partial class MyService 
                 {
@@ -92,18 +123,23 @@ public class Analyzer_GSSI004_TestData : IEnumerable<TheoryDataRow<string, Analy
                     public MyService () { }
                 }
                 """,
+                Expectations =
                 [
-                    new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-                ], Prefix)
+                    NotTargetId,
+                ],
+            })
             {
-                Traits = { { "Category", [Category] } },
-                Label = $"{ID}: Not raised on StaticInstance with valid name of '{name}'"
+                Traits = { { "Category", Category } },
+                Label = $"{Target.Id}: Not raised on StaticInstance with valid name of '{name}'"
             };
         }
 
         foreach (string name in InvalidNames)
         {
-            yield return new($$"""
+            yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+            {
+                SourceCode =
+                $$"""
                 using Gori.StaticInstances;
                 public partial class MyService
                 {
@@ -111,12 +147,20 @@ public class Analyzer_GSSI004_TestData : IEnumerable<TheoryDataRow<string, Analy
                     public MyService () { }
                 }
                 """,
+                Expectations =
                 [
-                    new AnalyzerMatchIdData() { ID = ID, Position = 69, AdditionalPositions = [], Contains = [$"'{name}'"], Severity = DiagnosticSeverity.Error },
-                ], Prefix)
+                    new DiagnosticExpectation(Target)
+                    {
+                        IsExpected = true,
+                        Position = 69,
+                        AdditionalPositions = [],
+                        Message = $"'{name}'",
+                    },
+                ],
+            })
             {
-                Traits = { { "Category", [Category] } },
-                Label = $"{ID}: Raised on StaticInstance with invalid name of '{name}'"
+                Traits = { { "Category", Category } },
+                Label = $"{Target.Id}: Raised on StaticInstance with invalid name of '{name}'"
             };
         }
 
@@ -124,17 +168,22 @@ public class Analyzer_GSSI004_TestData : IEnumerable<TheoryDataRow<string, Analy
         // No attribute checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            $$"""
             public class MyService {
                 public MyService() { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class when no attributes used"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class when no attributes used"
         };
     }
 

@@ -3,16 +3,6 @@
 A Roslyn source generator that implements the static instance and/or singleton pattern via attributes, 
 with support for Lazy and Weak references (Thread Safe or Unsafe) for instance initialization.
 
-## Installation
-
-Add the NuGet package to your project:
-
-```xml
-<PackageReference Include="Gori.StaticInstances" Version="*" />
-```
-
----
-
 ## `[StaticInstance]`
 
 Place on a constructor to generate a static instance using that constructor and the supplied arguments. 
@@ -59,16 +49,19 @@ public partial class MyService { }
 
 Options for both StaticInstance and Singleton attributes are mostly the same. To avoid confusion with passing constructor parameters to `[StaticInstance]`, all attribute options are named.
 
-| Attribute      | Option        | Type                          | Default      | Description                                                                  |
-| -------------- | ------------- | ----------------------------- | ------------ | ---------------------------------------------------------------------------- |
-| StaticInstance | `Name`        | `string`                      | None         | Mandatory. Name of the generated static instance                             |
-| Singleton      | `Name`        | `string`                      | `"Instance"` | Optional. Name of the generated static instance                              |
-| *              | `Type`        | [`InstanceType`](#option-instancetype)       | `Property`   | Type of static instance to create                                            |
-| *              | `Internal`    | `bool`                        | `false`      | Generates with access modifier of `internal` instead of the default `public` |
-| Singleton      | `Constructor` | [`Constructor`](#option-constructor) | `Auto`       | Options for creating private default constructor if missing                  |
+| Attribute      | Option        | Type                                   | Default      | Description                                                                  |
+| -------------- | ------------- | -------------------------------------- | ------------ | ---------------------------------------------------------------------------- |
+| StaticInstance | `Name`        | `string`                               | None         | Mandatory. Name of the generated static instance                             |
+| Singleton      | `Name`        | `string`                               | `"Instance"` | Optional. Name of the generated static instance                              |
+| *              | `Type`        | [`InstanceType`](#option-instancetype) | `Property`   | Type of static instance to create                                            |
+| *              | `Internal`    | `bool`                                 | `false`      | Generates with access modifier of `internal` instead of the default `public` |
+| Singleton      | `Constructor` | [`Constructor`](#option-constructor)   | `Auto`       | Options for creating private default constructor if missing                  |
 
 
 > All names across `[Singleton]` and `[StaticInstance]` attributes on the same class must be unique.
+
+All instances for a type, including those defined across partial declarations, are generated together in one source file.
+Duplicate names produce an error; only one member is emitted, with the singleton taking precedence over static instances.
 
 ### Option: InstanceType
 

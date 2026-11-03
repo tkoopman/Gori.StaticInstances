@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+
+using Gori.StaticInstances.Analyzers;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -12,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Gori.StaticInstances.Analyzers.CodeFixes;
+namespace Gori.StaticInstances.CodeFix;
 
 /// <summary>
 /// Code fix for when partial keyword is missing from class using either
@@ -37,7 +35,7 @@ public sealed class EnforcePartialCodeFix : CodeFixProvider
             return;
         }
 
-        // Only act when SGLE001 is present; for CS0260-only situations let the standard fix handle it
+        // Only act when GSSI001 is present; for CS0260-only situations let the standard fix handle it
         if (!context.Diagnostics.Any(d => d.Id == DiagnosticDescriptors.NonPartialType.Id))
         {
             return;
@@ -56,7 +54,7 @@ public sealed class EnforcePartialCodeFix : CodeFixProvider
         }
 
         var codeAction = CodeAction.Create(
-        title: "Make Singleton type partial",
+        title: "Make type partial",
         createChangedDocument: ct => MakeTypePartialAsync(context.Document, typeDeclaration, ct),
         equivalenceKey: "MakeTypePartial");
 

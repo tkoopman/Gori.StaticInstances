@@ -1,26 +1,33 @@
-namespace Gori.StaticInstances;
-#pragma warning disable IDE0001, IDE0002
+using System;
 
-/*
- * Following code should also be copied into Const.SingletonAttributeCode
- */
+namespace Gori.StaticInstances;
 
 /// <summary>
 /// Attribute to make class implement the singleton pattern.
 /// </summary>
-[global::System.AttributeUsage(global::System.AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-internal sealed class SingletonAttribute : global::System.Attribute
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public sealed class SingletonAttribute : Attribute
 {
+    /// <summary>
+    /// Default singleton name.
+    /// </summary>
+    public const string DefaultSingletonPropertyName = "Instance";
+
     /// <summary>
     /// Gets or sets the name that should be assigned to the static instance property.
     /// Must be a valid C# identifier that is not a reserved or contextual keyword.
     /// </summary>
-    public string Name { get; set; } = Const.DefaultSingletonPropertyName;
+    public string Name { get; set; } = DefaultSingletonPropertyName;
 
     /// <summary>
     /// Gets or sets the type of static instance to generate.
     /// </summary>
     public InstanceType Type { get; set; }
+
+    /// <summary>
+    /// Gets or sets the comment that should be added to the generated static instance property.
+    /// </summary>
+    public string? Comment { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the accessibility modifier given to the static

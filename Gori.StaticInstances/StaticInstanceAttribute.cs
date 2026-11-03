@@ -1,9 +1,6 @@
-namespace Gori.StaticInstances;
-#pragma warning disable IDE0001
+using System;
 
-/*
- * Following code should also be copied into Const.SingletonAttributeCode
- */
+namespace Gori.StaticInstances;
 
 /// <summary>
 /// Attribute placed on a constructor to generate a named static property that creates
@@ -12,8 +9,8 @@ namespace Gori.StaticInstances;
 /// named properties. All names must be unique within the class, including the name
 /// used by <see cref="SingletonAttribute"/>.
 /// </summary>
-[global::System.AttributeUsage(global::System.AttributeTargets.Constructor, AllowMultiple = true, Inherited = false)]
-internal sealed class StaticInstanceAttribute : global::System.Attribute
+[AttributeUsage(AttributeTargets.Constructor, AllowMultiple = true, Inherited = false)]
+public sealed class StaticInstanceAttribute : Attribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="StaticInstanceAttribute"/> class.
@@ -33,6 +30,11 @@ internal sealed class StaticInstanceAttribute : global::System.Attribute
     /// Gets or sets the type of static instance to generate.
     /// </summary>
     public InstanceType Type { get; set; }
+
+    /// <summary>
+    /// Gets or sets the comment that should be added to the generated static instance property.
+    /// </summary>
+    public string? Comment { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the accessibility modifier given to the static

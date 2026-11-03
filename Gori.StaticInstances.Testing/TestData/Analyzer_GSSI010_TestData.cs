@@ -1,43 +1,71 @@
 using System.Collections;
 
+using Gori.Common.Roslyn.Test;
+using Gori.StaticInstances.Analyzers;
+
 using Microsoft.CodeAnalysis;
 
 namespace Gori.StaticInstances.Testing.TestData;
 
-public class Analyzer_GSSI010_TestData : IEnumerable<TheoryDataRow<string, AnalyzerMatchIdData[], string?>>
+public class Analyzer_GSSI010_TestData : IEnumerable<TheoryDataRow<MockSourceData>>
 {
-    public const string Prefix = "GSSI";
-    public const string ID = "GSSI010";
-    public const string Category = $"Analyzer\\{ID}";
-
-    public IEnumerator<TheoryDataRow<string, AnalyzerMatchIdData[], string?>> GetEnumerator()
+    public static readonly DiagnosticDescriptor Target = DiagnosticDescriptors.StaticInstanceOnPrimaryConstructor;
+    public static readonly HashSet<string> Category = [$"Analyzer\\{Target.Id}"];
+    public static readonly DiagnosticExpectation NotTargetId = new DiagnosticExpectation()
     {
-        yield return new("""
+        IsExpected = false,
+        Id = Target.Id,
+    };
+
+    public IEnumerator<TheoryDataRow<MockSourceData>> GetEnumerator()
+    {
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [method: StaticInstance(Name = "Instance")]
             public partial class MyService() { }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 38, AdditionalPositions = [], Contains = ["MyService"], Severity = DiagnosticSeverity.Error },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 38,
+                    AdditionalPositions = [],
+                    Message = "MyService",
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on class with [StaticInstance] on primary constructor"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on class with [StaticInstance] on primary constructor"
         };
 
-        // While technically will work due to using Pipeline 1, should still raise for consistency
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             [method: StaticInstance(Name = "MyInstance")]
             public partial class MyService() { }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 51, AdditionalPositions = [], Contains = ["MyService"], Severity = DiagnosticSeverity.Error },
-            ], ID) // Using ID ass get lots of other errors in this case
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 51,
+                    AdditionalPositions = [],
+                    Message = "MyService",
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on class with [StaticInstance] on primary constructor even if Singleton also used (Technically works)"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on class with [StaticInstance] on primary constructor even if Singleton also used (Technically works)"
         };
     }
 

@@ -1,22 +1,32 @@
 using System.Collections;
 
+using Gori.Common.Roslyn.Test;
+using Gori.StaticInstances.Analyzers;
+
 using Microsoft.CodeAnalysis;
 
 namespace Gori.StaticInstances.Testing.TestData;
 
-public class Analyzer_GSSI008_TestData : IEnumerable<TheoryDataRow<string, AnalyzerMatchIdData[], string?>>
+public class Analyzer_GSSI008_TestData : IEnumerable<TheoryDataRow<MockSourceData>>
 {
-    public const string Prefix = "GSSI";
-    public const string ID = "GSSI008";
-    public const string Category = $"Analyzer\\{ID}";
+    public static readonly DiagnosticDescriptor Target = DiagnosticDescriptors.ArgumentTypeMismatch;
+    public static readonly HashSet<string> Category = [$"Analyzer\\{Target.Id}"];
+    public static readonly DiagnosticExpectation NotTargetId = new DiagnosticExpectation()
+    {
+        IsExpected = false,
+        Id = Target.Id,
+    };
 
-    public IEnumerator<TheoryDataRow<string, AnalyzerMatchIdData[], string?>> GetEnumerator()
+    public IEnumerator<TheoryDataRow<MockSourceData>> GetEnumerator()
     {
         // -------------------------------------------------------------------------
         // StaticInstance checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public partial class MyService
             {
@@ -30,16 +40,47 @@ public class Analyzer_GSSI008_TestData : IEnumerable<TheoryDataRow<string, Analy
                 private MyService(string value) { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 154, AdditionalPositions = [], Contains = ["int", "float"], Severity = DiagnosticSeverity.Warning },
-                new AnalyzerMatchIdData() { ID = ID, Position = 240, AdditionalPositions = [], Contains = ["int", "string"], Severity = DiagnosticSeverity.Warning },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 154,
+                    AdditionalPositions = [],
+                    Message = "int",
+                },
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 154,
+                    AdditionalPositions = [],
+                    Message = "float",
+                },
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 240,
+                    AdditionalPositions = [],
+                    Message = "int",
+                },
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 240,
+                    AdditionalPositions = [],
+                    Message = "string",
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on 2x [StaticInstance] when both have attribute types that do not match"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on 2x [StaticInstance] when both have attribute types that do not match"
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public partial class MyService
             {
@@ -47,29 +88,36 @@ public class Analyzer_GSSI008_TestData : IEnumerable<TheoryDataRow<string, Analy
                 private MyService (object value) { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on [StaticInstance] when parameter is an object set to null. We do not enforce #nullable."
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on [StaticInstance] when parameter is an object set to null. We do not enforce #nullable."
         };
 
         // -------------------------------------------------------------------------
         // No attribute checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             public class MyService {
                 public MyService() { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class when no attributes used"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class when no attributes used"
         };
     }
 

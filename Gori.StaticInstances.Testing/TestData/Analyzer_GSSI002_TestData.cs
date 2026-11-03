@@ -1,22 +1,32 @@
 using System.Collections;
 
+using Gori.Common.Roslyn.Test;
+using Gori.StaticInstances.Analyzers;
+
 using Microsoft.CodeAnalysis;
 
 namespace Gori.StaticInstances.Testing.TestData;
 
-public class Analyzer_GSSI002_TestData : IEnumerable<TheoryDataRow<string, AnalyzerMatchIdData[], string?>>
+public class Analyzer_GSSI002_TestData : IEnumerable<TheoryDataRow<MockSourceData>>
 {
-    public const string Prefix = "GSSI";
-    public const string ID = "GSSI002";
-    public const string Category = $"Analyzer\\{ID}";
+    public static readonly DiagnosticDescriptor Target = DiagnosticDescriptors.NoDefaultConstructor;
+    public static readonly HashSet<string> Category = [$"Analyzer\\{Target.Id}"];
+    public static readonly DiagnosticExpectation NotTargetId = new DiagnosticExpectation()
+    {
+        IsExpected = false,
+        Id = Target.Id,
+    };
 
-    public IEnumerator<TheoryDataRow<string, AnalyzerMatchIdData[], string?>> GetEnumerator()
+    public IEnumerator<TheoryDataRow<MockSourceData>> GetEnumerator()
     {
         // -------------------------------------------------------------------------
         // Singleton checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             public partial class MyService
@@ -24,15 +34,26 @@ public class Analyzer_GSSI002_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public MyService (int value) { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = 30, AdditionalPositions = [], Contains = ["MyService"], Severity = DiagnosticSeverity.Error },
-            ], Prefix)
+                new DiagnosticExpectation(Target)
+                {
+                    IsExpected = true,
+                    Position = 30,
+                    AdditionalPositions = [],
+                    Message = "MyService",
+                },
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Raised on class with no default constructor and [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Raised on class with no default constructor and [Singleton]"
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton(Constructor = Constructor.On)]
             public partial class MyService
@@ -40,41 +61,56 @@ public class Analyzer_GSSI002_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public MyService (int value) { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class with no default constructor but [Singleton(Constructor = Constructor.On)]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class with no default constructor but [Singleton(Constructor = Constructor.On)]"
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             public partial class MyService { }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class with no explicit constructors and [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class with no explicit constructors and [Singleton]"
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             public partial class MyService () { }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], ID) // Using ID instead of prefix as will get GSSI003
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class with primary default constructor and [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class with primary default constructor and [Singleton]"
         };
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             [Singleton]
             public partial class MyService
@@ -83,19 +119,24 @@ public class Analyzer_GSSI002_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public MyService (int value) { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class with multiple constructors including default constructor and [Singleton]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class with multiple constructors including default constructor and [Singleton]"
         };
 
         // -------------------------------------------------------------------------
         // StaticInstance checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             using Gori.StaticInstances;
             public partial class MyService
             {
@@ -103,30 +144,37 @@ public class Analyzer_GSSI002_TestData : IEnumerable<TheoryDataRow<string, Analy
                 public MyService (int value) { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class with [StaticInstance]"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class with [StaticInstance]"
         };
 
         // -------------------------------------------------------------------------
         // No attribute checks
         // -------------------------------------------------------------------------
 
-        yield return new("""
+        yield return new TheoryDataRow<MockSourceData>(new MockSourceData()
+        {
+            SourceCode =
+            """
             public partial class MyService
             {
                 public MyService (int value) { }
             }
             """,
+            Expectations =
             [
-                new AnalyzerMatchIdData() { ID = ID, Position = -1 },
-            ], Prefix)
+                NotTargetId,
+            ],
+        })
         {
-            Traits = { { "Category", [Category] } },
-            Label = $"{ID}: Not raised on class when no attributes used"
+            Traits = { { "Category", Category } },
+            Label = $"{Target.Id}: Not raised on class when no attributes used"
         };
     }
 

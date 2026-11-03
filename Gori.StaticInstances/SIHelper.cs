@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -65,38 +66,20 @@ internal static class SIHelper
     /// <returns>Source code keyword(s) for the symbol.</returns>
     public static string? GetSymbolTypeDefinition(INamedTypeSymbol symbol)
         => symbol.IsRecord
-        ? symbol.TypeKind switch
-        {
-            TypeKind.Class => "record",
-            TypeKind.Struct => "record struct",
-            _ => null,
-        }
-        : symbol.TypeKind switch
-        {
-            TypeKind.Class => "class",
-            TypeKind.Struct => "struct",
-            _ => null,
-        };
+            ? symbol.TypeKind switch { TypeKind.Class => "record", TypeKind.Struct => "record struct", _ => null, }
+            : symbol.TypeKind switch { TypeKind.Class => "class", TypeKind.Struct => "struct", _ => null, };
 
     /// <summary>
-    /// Checks class including inheritance for conflicting names. Adds suffix to make unique.
+    /// Allocates a field name, adding a numeric suffix when the name is already reserved.
     /// </summary>
-    /// <param name="classSymbol">Class, struct or record the field needs to be unique for.</param>
+    /// <param name="allocatedNames">Existing and generated member names, updated with the allocated name.</param>
     /// <param name="baseFieldName">Field name you want to get unique version of.</param>
     /// <returns><paramref name="baseFieldName"/> with incremented numeric suffix added if needed to make unique.</returns>
-    public static string GetUniqueFieldName(INamedTypeSymbol classSymbol, string baseFieldName)
+    public static string GetUniqueFieldName(HashSet<string> allocatedNames, string baseFieldName)
     {
         string candidateName = baseFieldName;
         int suffix = 1;
-
-        // Fields cannot have same name as class/struct they live in
-        if (classSymbol.Name == baseFieldName)
-        {
-            candidateName = $"{baseFieldName}{suffix++}";
-        }
-
-        // Keep looping as long as a field with the candidate name already exists
-        while (ClassContainsName(classSymbol, candidateName))
+        while (!allocatedNames.Add(candidateName))
         {
             candidateName = $"{baseFieldName}{suffix++}";
         }

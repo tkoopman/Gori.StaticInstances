@@ -1,14 +1,10 @@
 namespace Gori.StaticInstances;
 
-/*
- * Following code should also be copied into Const.ConstructorCode
- */
-
 /// <summary>
 /// Defines if Singleton attribute should generate
 /// a private default constructor if a default constructor doesn't already exist.
 /// </summary>
-internal enum Constructor
+public enum Constructor
 {
     /// <summary>
     /// If no explicitly defined constructors exist,
